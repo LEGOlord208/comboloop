@@ -63,7 +63,7 @@ func main() {
 		finished = true
 	}()
 
-	first := false
+	first := true
 	for !finished {
 		if first {
 			first = false

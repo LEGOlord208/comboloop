@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/legolord208/stdutil"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/legolord208/stdutil"
 )
 
 const DictAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -18,16 +19,22 @@ var finished bool
 var maxlen int
 
 func main() {
+	var start string
 	var delay int
 
 	flag.IntVar(&maxlen, "len", 0, "Specifies the max length")
 	flag.IntVar(&delay, "delay", 0, "Specifies the delay between turns")
+	flag.StringVar(&start, "start", "", "Specify at what string to start at")
 	flag.Parse()
 
 	args := flag.Args()
 	if len(args) < 1 {
 		printHelp()
 		return
+	}
+
+	if maxlen <= 0 {
+		maxlen = len(dict)
 	}
 
 	switch args[0] {
@@ -51,8 +58,23 @@ func main() {
 		return
 	}
 
-	if maxlen <= 0 {
-		maxlen = len(dict)
+	if len(start) > 0 {
+		result = make([]int, len(start))
+		for i, c := range start {
+			index := -1
+			for i2, c2 := range dict {
+				if c == c2 {
+					index = i2
+				}
+			}
+
+			if index < 0 {
+				stdutil.PrintErr("Start includes items outside dictionary", nil)
+				return
+			}
+
+			result[i] = index
+		}
 	}
 
 	go func() {
@@ -63,11 +85,8 @@ func main() {
 		finished = true
 	}()
 
-	first := true
 	for !finished {
-		if first {
-			first = false
-		} else {
+		if len(result) > 0 {
 			fmt.Println(getresult())
 		}
 		increment(len(result) - 1)

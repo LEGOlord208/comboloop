@@ -33,10 +33,6 @@ func main() {
 		return
 	}
 
-	if maxlen <= 0 {
-		maxlen = len(dict)
-	}
-
 	switch args[0] {
 	case "alphabet":
 		dict = DictAlphabet
@@ -58,6 +54,9 @@ func main() {
 		return
 	}
 
+	if maxlen <= 0 {
+		maxlen = len(dict)
+	}
 	if len(start) > 0 {
 		result = make([]int, len(start))
 		for i, c := range start {

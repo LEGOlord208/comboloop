@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/legolord208/stdutil"
+	"github.com/jD91mZM2/stdutil"
 )
 
 const DictAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

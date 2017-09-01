@@ -1,31 +1,21 @@
 package main
 
-func increment(pos int) {
-	if len(result) <= 0 {
-		result = []int{0}
-		return
+func each(handler func(string), text string) bool {
+	if finished {
+		return false
 	}
-	if result[pos]+1 >= len(dict) {
-		result[pos] = 0
-
-		if pos <= 0 {
-			if len(result) >= maxlen {
-				finished = true
-				return
+	if len(text) >= maxlen {
+		handler(text)
+	} else {
+		handler(text)
+		for i, c := range dict {
+			if len(text) < len(startAt) && i < startAt[len(text)] {
+				continue
 			}
-			result = append([]int{0}, result...)
-		} else {
-			increment(pos - 1)
+			if !each(handler, text+string(c)) {
+				return false
+			}
 		}
-		return
 	}
-	result[pos]++
-}
-
-func getresult() string {
-	res := ""
-	for _, i := range result {
-		res += string(dict[i])
-	}
-	return res
+	return true
 }

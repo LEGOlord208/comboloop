@@ -14,13 +14,13 @@ const DictAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const DictNumbers = "0123456789"
 
 var dict string
-var result []int
 var finished bool
 var maxlen int
+var startAt []int
 
 func main() {
-	var start string
 	var delay int
+	var start string
 
 	flag.IntVar(&maxlen, "len", 0, "Specifies the max length")
 	flag.IntVar(&delay, "delay", 0, "Specifies the delay between turns")
@@ -36,11 +36,22 @@ func main() {
 	switch args[0] {
 	case "alphabet":
 		dict = DictAlphabet
+		if len(args) > 1 {
+			printHelp()
+			return
+		}
 	case "numbers":
 		dict = DictNumbers
+		if len(args) > 1 {
+			printHelp()
+			return
+		}
 	case "custom":
 		if len(args) < 2 {
 			stdutil.PrintErr("No custom dictionary provided", nil)
+			return
+		} else if len(args) > 2 {
+			printHelp()
 			return
 		}
 		dict = args[1]
@@ -57,8 +68,13 @@ func main() {
 	if maxlen <= 0 {
 		maxlen = len(dict)
 	}
+	if len(start) > maxlen {
+		stdutil.PrintErr("Start can't be longer than max length!", nil)
+		return
+	}
 	if len(start) > 0 {
-		result = make([]int, len(start))
+		startAt = make([]int, len(start))
+
 		for i, c := range start {
 			index := -1
 			for i2, c2 := range dict {
@@ -72,7 +88,7 @@ func main() {
 				return
 			}
 
-			result[i] = index
+			startAt[i] = index
 		}
 	}
 
@@ -84,16 +100,15 @@ func main() {
 		finished = true
 	}()
 
-	for !finished {
+	each(func(result string) {
 		if len(result) > 0 {
-			fmt.Println(getresult())
+			fmt.Println(result)
 		}
-		increment(len(result) - 1)
 
 		if delay > 0 {
 			time.Sleep(time.Duration(delay) * time.Millisecond)
 		}
-	}
+	}, "")
 }
 
 func printHelp() {
